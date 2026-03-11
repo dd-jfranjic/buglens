@@ -5,6 +5,15 @@ All notable changes to BugLens will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] — 2026-03-11
+
+### Fixed
+- Escape output for `checked()` return values in settings (Plugin Check compliance)
+- Prefix all global variables in `uninstall.php` and `board.php` with `buglens_`
+- Add phpcs ignore comments for intentional `proc_open`/`fclose` usage in terminal
+- Add phpcs ignore comments for raw input in terminal commands and file editor content
+- Include `readme.txt` in plugin directory for WordPress.org validation
+
 ## [2.0.0] — 2026-03-11
 
 ### Added

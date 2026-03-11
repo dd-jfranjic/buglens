@@ -163,6 +163,7 @@ class BugLens_Files {
         }
 
         $path      = sanitize_text_field( wp_unslash( $_POST['path'] ?? '' ) );
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File content must preserve original formatting (code files). Path is validated via resolve_safe_path().
         $content   = wp_unslash( $_POST['content'] ?? '' );
         $full_path = self::resolve_safe_path( $path );
 

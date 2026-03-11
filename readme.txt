@@ -4,7 +4,7 @@ Donate link: https://2klika.hr
 Tags: bug-report, ai, developer-tools, debugging, screenshot
 Requires at least: 6.0
 Tested up to: 6.9
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 Requires PHP: 8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -148,6 +148,11 @@ BugLens works on individual sites within a multisite network. Each site has its 
 8. Settings page — API key, widget position, visibility, color
 
 == Changelog ==
+
+= 2.0.1 — 2026-03-11 =
+* **Fixed**: Output escaping for settings fields (Plugin Check compliance)
+* **Fixed**: Global variable prefixing in uninstall.php and board template
+* **Fixed**: Added phpcs annotations for terminal and file editor raw input handling
 
 = 2.0.0 — 2026-03-11 =
 * **New**: Kanban board with drag-and-drop status management

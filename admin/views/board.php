@@ -21,17 +21,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     <div class="buglens-board" id="buglens-board">
         <?php
-        $columns = [
+        $buglens_columns = [
             'open'        => __( 'Open', 'buglens' ),
             'in_progress' => __( 'In Progress', 'buglens' ),
             'resolved'    => __( 'Resolved', 'buglens' ),
             'closed'      => __( 'Closed', 'buglens' ),
         ];
-        foreach ( $columns as $status => $label ) :
+        foreach ( $buglens_columns as $status => $buglens_label ) :
             ?>
             <div class="buglens-board__column" data-status="<?php echo esc_attr( $status ); ?>">
                 <div class="buglens-board__column-header">
-                    <h3><?php echo esc_html( $label ); ?></h3>
+                    <h3><?php echo esc_html( $buglens_label ); ?></h3>
                     <span class="buglens-board__count" data-count-for="<?php echo esc_attr( $status ); ?>">0</span>
                 </div>
                 <div class="buglens-board__cards" data-status="<?php echo esc_attr( $status ); ?>"></div>

@@ -217,7 +217,7 @@ class BugLens_Admin {
             printf(
                 '<label class="buglens-radio-label"><input type="radio" name="buglens_settings[fab_position]" value="%s" %s /> %s</label>',
                 esc_attr( $value ),
-                $checked,
+                esc_attr( $checked ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- checked() returns safe HTML attribute.
                 esc_html( $label )
             );
         }
@@ -257,8 +257,8 @@ class BugLens_Admin {
             printf(
                 '<label class="buglens-radio-label"><input type="radio" name="buglens_settings[visibility]" value="%s" %s /> %s</label>',
                 esc_attr( $value ),
-                $checked,
-                $label // Already sanitized via wp_kses above.
+                esc_attr( $checked ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- checked() returns safe HTML attribute.
+                wp_kses( $label, [ 'code' => [] ] ) // Already sanitized via wp_kses above, re-escaped for Plugin Check compliance.
             );
         }
         echo '</div>';

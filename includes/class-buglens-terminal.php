@@ -49,6 +49,7 @@ class BugLens_Terminal {
         }
 
         $session_id = sanitize_key( $_POST['session_id'] ?? '' );
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Shell command must be passed as-is. Security enforced via manage_options capability check and nonce.
         $command    = wp_unslash( $_POST['command'] ?? '' );
 
         if ( ! $session_id || $command === '' ) {
@@ -126,13 +127,14 @@ class BugLens_Terminal {
         ];
 
         $env     = null; // Inherit current environment.
+        // phpcs:ignore Generic.PHP.ForbiddenFunctions.Found -- Terminal feature requires proc_open for shell execution. Admin-only with capability check.
         $process = proc_open( $command, $descriptors, $pipes, $cwd, $env );
 
         if ( ! is_resource( $process ) ) {
             wp_send_json_error( __( 'Failed to execute command.', 'buglens' ) );
         }
 
-        fclose( $pipes[0] ); // Close stdin.
+        fclose( $pipes[0] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Closing proc_open pipe, WP_Filesystem not applicable.
 
         // Read with timeout protection.
         stream_set_timeout( $pipes[1], 30 );
@@ -141,8 +143,8 @@ class BugLens_Terminal {
         $stdout = stream_get_contents( $pipes[1] );
         $stderr = stream_get_contents( $pipes[2] );
 
-        fclose( $pipes[1] );
-        fclose( $pipes[2] );
+        fclose( $pipes[1] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Closing proc_open pipe.
+        fclose( $pipes[2] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Closing proc_open pipe.
 
         $exit_code = proc_close( $process );
 

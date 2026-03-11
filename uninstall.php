@@ -13,15 +13,15 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 // Delete all bug reports.
-$reports = get_posts( [
+$buglens_reports = get_posts( [
     'post_type'   => 'buglens_report',
     'numberposts' => -1,
     'fields'      => 'ids',
     'post_status' => 'any',
 ] );
 
-foreach ( $reports as $id ) {
-    wp_delete_post( $id, true );
+foreach ( $buglens_reports as $buglens_id ) {
+    wp_delete_post( $buglens_id, true );
 }
 
 // Delete orphaned post meta for any reports that may have been missed.
@@ -42,8 +42,8 @@ $buglens_meta_keys = [
     '_buglens_status',
 ];
 
-foreach ( $buglens_meta_keys as $meta_key ) {
-    delete_post_meta_by_key( $meta_key );
+foreach ( $buglens_meta_keys as $buglens_meta_key ) {
+    delete_post_meta_by_key( $buglens_meta_key );
 }
 
 // Delete options.
@@ -51,18 +51,18 @@ delete_option( 'buglens_api_key' );
 delete_option( 'buglens_settings' );
 
 // Delete upload directory recursively.
-$upload_dir  = wp_upload_dir();
-$buglens_dir = $upload_dir['basedir'] . '/buglens';
+$buglens_upload_dir = wp_upload_dir();
+$buglens_dir        = $buglens_upload_dir['basedir'] . '/buglens';
 
 if ( is_dir( $buglens_dir ) ) {
-    $it    = new RecursiveDirectoryIterator( $buglens_dir, RecursiveDirectoryIterator::SKIP_DOTS );
-    $files = new RecursiveIteratorIterator( $it, RecursiveIteratorIterator::CHILD_FIRST );
+    $buglens_it    = new RecursiveDirectoryIterator( $buglens_dir, RecursiveDirectoryIterator::SKIP_DOTS );
+    $buglens_files = new RecursiveIteratorIterator( $buglens_it, RecursiveIteratorIterator::CHILD_FIRST );
 
-    foreach ( $files as $file ) {
-        if ( $file->isDir() ) {
-            rmdir( $file->getRealPath() ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir
+    foreach ( $buglens_files as $buglens_file ) {
+        if ( $buglens_file->isDir() ) {
+            rmdir( $buglens_file->getRealPath() ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir
         } else {
-            wp_delete_file( $file->getRealPath() );
+            wp_delete_file( $buglens_file->getRealPath() );
         }
     }
 
