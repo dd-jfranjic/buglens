@@ -1,0 +1,424 @@
+# Copyright (C) 2026 2klika
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: BugLens – Visual Bug Reporter for AI Agents 2.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/buglens\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-03-11T08:44:57+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: buglens\n"
+
+#. Plugin Name of the plugin
+#: buglens.php
+msgid "BugLens – Visual Bug Reporter for AI Agents"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: buglens.php
+msgid "https://2klika.hr/buglens"
+msgstr ""
+
+#. Description of the plugin
+#: buglens.php
+msgid "Visually select elements, capture screenshots, and create AI-optimized bug reports."
+msgstr ""
+
+#. Author of the plugin
+#: buglens.php
+msgid "2klika"
+msgstr ""
+
+#. Author URI of the plugin
+#: buglens.php
+msgid "https://2klika.hr"
+msgstr ""
+
+#: admin/views/board.php:13
+msgid "BugLens Board"
+msgstr ""
+
+#: admin/views/board.php:16
+msgid "Filter by page:"
+msgstr ""
+
+#: admin/views/board.php:18
+msgid "All pages"
+msgstr ""
+
+#: admin/views/board.php:25
+msgid "Open"
+msgstr ""
+
+#: admin/views/board.php:26
+msgid "In Progress"
+msgstr ""
+
+#: admin/views/board.php:27
+msgid "Resolved"
+msgstr ""
+
+#: admin/views/board.php:28
+msgid "Closed"
+msgstr ""
+
+#: admin/views/board.php:47
+msgid "Close"
+msgstr ""
+
+#: admin/views/files.php:13
+msgid "BugLens Files"
+msgstr ""
+
+#: admin/views/files.php:21
+msgid "Loading..."
+msgstr ""
+
+#: admin/views/files.php:24
+msgid "Select a file to view its contents"
+msgstr ""
+
+#: admin/views/files.php:33
+msgid "Download"
+msgstr ""
+
+#: admin/views/files.php:36
+msgid "Save"
+msgstr ""
+
+#: admin/views/settings.php:15
+msgid "BugLens Settings"
+msgstr ""
+
+#: admin/views/terminal.php:13
+msgid "BugLens Terminal"
+msgstr ""
+
+#: admin/views/terminal.php:16
+msgid "Clear terminal output"
+msgstr ""
+
+#: admin/views/terminal.php:18
+msgid "Clear"
+msgstr ""
+
+#: admin/views/terminal.php:20
+msgid "Start a new session"
+msgstr ""
+
+#: admin/views/terminal.php:22
+msgid "New Session"
+msgstr ""
+
+#: admin/views/terminal.php:34
+msgid "Live Server Terminal"
+msgstr ""
+
+#: admin/views/terminal.php:37
+msgid "This is a <strong>real shell</strong> on this server. Commands you run here have real effects."
+msgstr ""
+
+#: admin/views/terminal.php:41
+msgid "The terminal runs as the web server user. Use with caution."
+msgstr ""
+
+#: admin/views/terminal.php:44
+msgid "I understand and accept the risks"
+msgstr ""
+
+#: admin/views/terminal.php:48
+msgid "Continue"
+msgstr ""
+
+#: admin/views/terminal.php:51
+msgid "Go Back"
+msgstr ""
+
+#: includes/class-buglens-admin.php:19
+#: includes/class-buglens-admin.php:20
+msgid "BugLens"
+msgstr ""
+
+#: includes/class-buglens-admin.php:30
+#: includes/class-buglens-admin.php:31
+msgid "Board"
+msgstr ""
+
+#: includes/class-buglens-admin.php:39
+#: includes/class-buglens-admin.php:40
+#: includes/class-buglens-cpt.php:30
+msgid "All Reports"
+msgstr ""
+
+#: includes/class-buglens-admin.php:47
+#: includes/class-buglens-admin.php:48
+msgid "Files"
+msgstr ""
+
+#: includes/class-buglens-admin.php:56
+#: includes/class-buglens-admin.php:57
+msgid "Terminal"
+msgstr ""
+
+#: includes/class-buglens-admin.php:65
+#: includes/class-buglens-admin.php:66
+msgid "Settings"
+msgstr ""
+
+#: includes/class-buglens-admin.php:83
+msgid "General Settings"
+msgstr ""
+
+#: includes/class-buglens-admin.php:90
+msgid "API Key"
+msgstr ""
+
+#: includes/class-buglens-admin.php:98
+msgid "FAB Position"
+msgstr ""
+
+#: includes/class-buglens-admin.php:106
+msgid "Widget Visibility"
+msgstr ""
+
+#: includes/class-buglens-admin.php:114
+msgid "Widget Color"
+msgstr ""
+
+#: includes/class-buglens-admin.php:122
+msgid "outerHTML Limit"
+msgstr ""
+
+#: includes/class-buglens-admin.php:130
+msgid "Capture Console Errors"
+msgstr ""
+
+#: includes/class-buglens-admin.php:176
+msgid "Copy to clipboard"
+msgstr ""
+
+#: includes/class-buglens-admin.php:178
+#: includes/class-buglens-admin.php:450
+msgid "Copy"
+msgstr ""
+
+#: includes/class-buglens-admin.php:184
+msgid "Regenerate API Key"
+msgstr ""
+
+#: includes/class-buglens-admin.php:186
+#: includes/class-buglens-admin.php:452
+msgid "Regenerate"
+msgstr ""
+
+#: includes/class-buglens-admin.php:192
+msgid "Use this key in the <code>X-BugLens-Key</code> header for REST API authentication."
+msgstr ""
+
+#: includes/class-buglens-admin.php:208
+msgid "Bottom Right"
+msgstr ""
+
+#: includes/class-buglens-admin.php:209
+msgid "Bottom Left"
+msgstr ""
+
+#: includes/class-buglens-admin.php:210
+msgid "Top Right"
+msgstr ""
+
+#: includes/class-buglens-admin.php:211
+msgid "Top Left"
+msgstr ""
+
+#: includes/class-buglens-admin.php:225
+msgid "Corner of the screen where the bug-report button appears."
+msgstr ""
+
+#: includes/class-buglens-admin.php:241
+msgid "Admins only — Only users with <code>manage_options</code> capability"
+msgstr ""
+
+#: includes/class-buglens-admin.php:245
+msgid "Logged-in users — Any authenticated user"
+msgstr ""
+
+#: includes/class-buglens-admin.php:249
+msgid "Everyone — All visitors (use with caution)"
+msgstr ""
+
+#: includes/class-buglens-admin.php:282
+msgid "Primary color for the floating action button and widget accents."
+msgstr ""
+
+#: includes/class-buglens-admin.php:301
+msgid "characters"
+msgstr ""
+
+#: includes/class-buglens-admin.php:303
+msgid "Maximum number of characters captured for the selected element's outer HTML. Higher values give more context but increase report size."
+msgstr ""
+
+#: includes/class-buglens-admin.php:320
+msgid "Automatically capture JavaScript console errors and include them in bug reports"
+msgstr ""
+
+#: includes/class-buglens-admin.php:331
+#: includes/class-buglens-admin.php:338
+#: includes/class-buglens-admin.php:345
+#: includes/class-buglens-admin.php:352
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: includes/class-buglens-admin.php:451
+msgid "Copied!"
+msgstr ""
+
+#: includes/class-buglens-admin.php:453
+msgid "Regenerating..."
+msgstr ""
+
+#: includes/class-buglens-admin.php:454
+msgid "Done!"
+msgstr ""
+
+#: includes/class-buglens-admin.php:455
+msgid "Are you sure? Any external integrations using the current key will stop working."
+msgstr ""
+
+#: includes/class-buglens-admin.php:456
+msgid "Error:"
+msgstr ""
+
+#: includes/class-buglens-admin.php:457
+msgid "Unknown error"
+msgstr ""
+
+#: includes/class-buglens-admin.php:458
+msgid "Network error. Please try again."
+msgstr ""
+
+#: includes/class-buglens-admin.php:475
+#: includes/class-buglens-files.php:50
+#: includes/class-buglens-files.php:106
+#: includes/class-buglens-files.php:162
+#: includes/class-buglens-files.php:187
+#: includes/class-buglens-terminal.php:48
+#: includes/class-buglens-terminal.php:181
+#: includes/class-buglens-terminal.php:210
+msgid "You do not have permission to perform this action."
+msgstr ""
+
+#: includes/class-buglens-cpt.php:22
+#: includes/class-buglens-cpt.php:31
+msgid "Bug Reports"
+msgstr ""
+
+#: includes/class-buglens-cpt.php:23
+msgid "Bug Report"
+msgstr ""
+
+#: includes/class-buglens-cpt.php:24
+msgid "Add New Bug Report"
+msgstr ""
+
+#: includes/class-buglens-cpt.php:25
+msgid "Edit Bug Report"
+msgstr ""
+
+#: includes/class-buglens-cpt.php:26
+msgid "View Bug Report"
+msgstr ""
+
+#: includes/class-buglens-cpt.php:27
+msgid "Search Bug Reports"
+msgstr ""
+
+#: includes/class-buglens-cpt.php:28
+msgid "No bug reports found"
+msgstr ""
+
+#: includes/class-buglens-cpt.php:29
+msgid "No bug reports found in Trash"
+msgstr ""
+
+#: includes/class-buglens-files.php:57
+msgid "Invalid directory."
+msgstr ""
+
+#: includes/class-buglens-files.php:113
+#: includes/class-buglens-files.php:194
+msgid "File not found."
+msgstr ""
+
+#: includes/class-buglens-files.php:132
+msgid "File too large (max 2 MB)."
+msgstr ""
+
+#: includes/class-buglens-files.php:170
+msgid "Invalid path."
+msgstr ""
+
+#: includes/class-buglens-files.php:176
+msgid "Failed to write file."
+msgstr ""
+
+#: includes/class-buglens-rest-api.php:235
+#: includes/class-buglens-rest-api.php:311
+#: includes/class-buglens-rest-api.php:337
+#: includes/class-buglens-rest-api.php:360
+msgid "Report not found."
+msgstr ""
+
+#: includes/class-buglens-rest-api.php:247
+msgid "Untitled Report"
+msgstr ""
+
+#. translators: %s: error message from WordPress
+#: includes/class-buglens-rest-api.php:260
+#, php-format
+msgid "Failed to create report: %s"
+msgstr ""
+
+#: includes/class-buglens-rest-api.php:345
+msgid "Failed to delete report."
+msgstr ""
+
+#: includes/class-buglens-rest-api.php:368
+msgid "No screenshot attached to this report."
+msgstr ""
+
+#: includes/class-buglens-rest-api.php:376
+msgid "Screenshot file missing."
+msgstr ""
+
+#. translators: %d: report post ID
+#: includes/class-buglens-rest-api.php:418
+#, php-format
+msgid "BugLens Report #%d"
+msgstr ""
+
+#: includes/class-buglens-terminal.php:55
+msgid "Missing required parameters."
+msgstr ""
+
+#: includes/class-buglens-terminal.php:113
+msgid "No such file or directory"
+msgstr ""
+
+#: includes/class-buglens-terminal.php:132
+msgid "Failed to execute command."
+msgstr ""
+
+#: includes/class-buglens-terminal.php:160
+msgid "Output truncated (exceeded 1 MB)"
+msgstr ""
+
+#: includes/class-buglens-widget.php:62
+msgid "BugLens: Console error capture is active."
+msgstr ""

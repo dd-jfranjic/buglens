@@ -1,0 +1,789 @@
+/* ==========================================================================
+   BugLens – Visual Bug Reporter Widget
+   Version: 1.0.0
+
+   Self-contained CSS for the BugLens floating widget.
+   All selectors prefixed with .buglens- to avoid theme conflicts.
+   Uses z-index near max-int to sit above everything.
+   ========================================================================== */
+
+/* === Variables === */
+
+:root {
+    --buglens-color: #F2C700;
+    --buglens-color-hover: #E0B900;
+    --buglens-color-active: #CCa800;
+    --buglens-color-rgb: 242, 199, 0;
+    --buglens-bg: #1A1A2E;
+    --buglens-bg-light: #222240;
+    --buglens-bg-input: #2A2A4A;
+    --buglens-text: #E8E8F0;
+    --buglens-text-muted: #9999B0;
+    --buglens-border: #3A3A5A;
+    --buglens-success: #34D399;
+    --buglens-error: #F87171;
+    --buglens-radius: 8px;
+    --buglens-radius-lg: 12px;
+    --buglens-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --buglens-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --buglens-transition: 200ms ease;
+    --buglens-fab-size: 56px;
+    --buglens-fab-offset: 24px;
+    --buglens-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+/* === Utility === */
+
+.buglens-hidden {
+    display: none !important;
+}
+
+/* === Reset — scoped to BugLens elements === */
+
+[class^="buglens-"],
+[class*=" buglens-"] {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: var(--buglens-font);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================================
+   FAB Button
+   ========================================================================== */
+
+.buglens-fab {
+    position: fixed;
+    z-index: 2147483646;
+    width: var(--buglens-fab-size);
+    height: var(--buglens-fab-size);
+    border: none;
+    border-radius: 50%;
+    background: var(--buglens-color);
+    color: #1A1A2E;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(var(--buglens-color-rgb), 0.35),
+        0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: transform var(--buglens-transition),
+        background-color var(--buglens-transition),
+        box-shadow var(--buglens-transition);
+    outline: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.buglens-fab:hover {
+    transform: scale(1.08);
+    background: var(--buglens-color-hover);
+    box-shadow: 0 6px 24px rgba(var(--buglens-color-rgb), 0.45),
+        0 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.buglens-fab:active {
+    transform: scale(0.96);
+    background: var(--buglens-color-active);
+}
+
+.buglens-fab:focus-visible {
+    outline: 2px solid var(--buglens-color);
+    outline-offset: 3px;
+}
+
+/* FAB Icon — lens/magnifier */
+.buglens-fab__icon {
+    width: 26px;
+    height: 26px;
+    transition: transform 300ms ease, opacity 200ms ease;
+}
+
+.buglens-fab__icon--close {
+    position: absolute;
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.6);
+}
+
+/* FAB in selector/active mode — show X, hide lens */
+.buglens-fab--active .buglens-fab__icon--lens {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.6);
+}
+
+.buglens-fab--active .buglens-fab__icon--close {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+}
+
+.buglens-fab--active {
+    background: var(--buglens-bg);
+    color: var(--buglens-text);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.buglens-fab--active:hover {
+    background: var(--buglens-bg-light);
+}
+
+/* === FAB Positions === */
+
+/* Default: bottom-right */
+.buglens-fab,
+.buglens-fab--bottom-right {
+    bottom: var(--buglens-fab-offset);
+    right: var(--buglens-fab-offset);
+}
+
+.buglens-fab--bottom-left {
+    bottom: var(--buglens-fab-offset);
+    left: var(--buglens-fab-offset);
+    right: auto;
+}
+
+.buglens-fab--top-right {
+    top: var(--buglens-fab-offset);
+    right: var(--buglens-fab-offset);
+    bottom: auto;
+}
+
+.buglens-fab--top-left {
+    top: var(--buglens-fab-offset);
+    left: var(--buglens-fab-offset);
+    bottom: auto;
+    right: auto;
+}
+
+/* === FAB Pulse Animation === */
+
+@keyframes buglens-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(var(--buglens-color-rgb), 0.5),
+            0 4px 16px rgba(var(--buglens-color-rgb), 0.35);
+    }
+    70% {
+        box-shadow: 0 0 0 14px rgba(var(--buglens-color-rgb), 0),
+            0 4px 16px rgba(var(--buglens-color-rgb), 0.35);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(var(--buglens-color-rgb), 0),
+            0 4px 16px rgba(var(--buglens-color-rgb), 0.35);
+    }
+}
+
+.buglens-fab--pulse {
+    animation: buglens-pulse 2s ease-in-out 3;
+}
+
+/* ==========================================================================
+   Selector Mode
+   ========================================================================== */
+
+/* Full-screen overlay during selector mode — captures pointer events */
+.buglens-selector-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2147483645;
+    cursor: crosshair;
+    /* Transparent — just for capturing events */
+    background: transparent;
+}
+
+/* === Highlight Overlay === */
+
+/* The blue highlight that follows the hovered element */
+.buglens-highlight {
+    position: fixed;
+    z-index: 2147483645;
+    pointer-events: none;
+    background: rgba(59, 130, 246, 0.12);
+    border: 2px solid rgba(59, 130, 246, 0.7);
+    border-radius: 2px;
+    transition: top 80ms ease-out,
+        left 80ms ease-out,
+        width 80ms ease-out,
+        height 80ms ease-out;
+}
+
+/* === Element Tooltip === */
+
+/* Shows tag + class near cursor, e.g. "div.hero-section" */
+.buglens-tooltip {
+    position: fixed;
+    z-index: 2147483646;
+    pointer-events: none;
+    background: var(--buglens-bg);
+    color: var(--buglens-text);
+    font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas,
+        "DejaVu Sans Mono", monospace;
+    font-size: 11px;
+    line-height: 1.3;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--buglens-border);
+    box-shadow: var(--buglens-shadow-sm);
+    white-space: nowrap;
+    max-width: 320px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.buglens-tooltip--visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.buglens-tooltip__tag {
+    color: var(--buglens-color);
+    font-weight: 600;
+}
+
+.buglens-tooltip__class {
+    color: var(--buglens-text-muted);
+}
+
+/* ==========================================================================
+   Report Form
+   ========================================================================== */
+
+/* Backdrop overlay behind the form */
+.buglens-form-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2147483647;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 250ms ease, visibility 250ms ease;
+}
+
+.buglens-form-backdrop--visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Slide-up panel */
+.buglens-form {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    z-index: 2147483647;
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: var(--buglens-bg);
+    border-top-left-radius: var(--buglens-radius-lg);
+    border-top-right-radius: var(--buglens-radius-lg);
+    box-shadow: var(--buglens-shadow);
+    transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    overscroll-behavior: contain;
+}
+
+.buglens-form--visible {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Drag handle indicator */
+.buglens-form__handle {
+    display: flex;
+    justify-content: center;
+    padding: 12px 0 4px;
+}
+
+.buglens-form__handle::after {
+    content: "";
+    width: 36px;
+    height: 4px;
+    background: var(--buglens-border);
+    border-radius: 2px;
+}
+
+/* Form header */
+.buglens-form__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 20px 12px;
+    border-bottom: 1px solid var(--buglens-border);
+}
+
+.buglens-form__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--buglens-text);
+    margin: 0;
+}
+
+.buglens-form__close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--buglens-text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--buglens-transition), color var(--buglens-transition);
+}
+
+.buglens-form__close:hover {
+    background: var(--buglens-bg-input);
+    color: var(--buglens-text);
+}
+
+.buglens-form__close svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Form body */
+.buglens-form__body {
+    padding: 16px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* === Form Elements === */
+
+.buglens-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.buglens-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--buglens-text-muted);
+    letter-spacing: 0.01em;
+}
+
+.buglens-input,
+.buglens-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--buglens-border);
+    border-radius: var(--buglens-radius);
+    background: var(--buglens-bg-input);
+    color: var(--buglens-text);
+    font-family: var(--buglens-font);
+    font-size: 14px;
+    transition: border-color var(--buglens-transition),
+        box-shadow var(--buglens-transition);
+    outline: none;
+}
+
+.buglens-input::placeholder,
+.buglens-textarea::placeholder {
+    color: var(--buglens-text-muted);
+    opacity: 0.6;
+}
+
+.buglens-input:focus,
+.buglens-textarea:focus {
+    border-color: var(--buglens-color);
+    box-shadow: 0 0 0 3px rgba(var(--buglens-color-rgb), 0.15);
+}
+
+.buglens-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Selected element preview */
+.buglens-selector-preview {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--buglens-bg-input);
+    border: 1px solid var(--buglens-border);
+    border-radius: var(--buglens-radius);
+    font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas,
+        "DejaVu Sans Mono", monospace;
+    font-size: 12px;
+    color: var(--buglens-text);
+    overflow: hidden;
+}
+
+.buglens-selector-preview__icon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: var(--buglens-color);
+}
+
+.buglens-selector-preview__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.buglens-selector-preview__reselect {
+    flex-shrink: 0;
+    margin-left: auto;
+    padding: 4px 8px;
+    border: 1px solid var(--buglens-border);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--buglens-text-muted);
+    font-size: 11px;
+    cursor: pointer;
+    transition: color var(--buglens-transition), border-color var(--buglens-transition);
+}
+
+.buglens-selector-preview__reselect:hover {
+    color: var(--buglens-color);
+    border-color: var(--buglens-color);
+}
+
+/* === Screenshot Preview === */
+
+.buglens-screenshot {
+    position: relative;
+    display: inline-flex;
+    border-radius: var(--buglens-radius);
+    overflow: hidden;
+    border: 1px solid var(--buglens-border);
+    background: var(--buglens-bg-input);
+    max-width: 100%;
+}
+
+.buglens-screenshot__img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    max-height: 160px;
+    object-fit: contain;
+}
+
+.buglens-screenshot__remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--buglens-transition);
+}
+
+.buglens-screenshot:hover .buglens-screenshot__remove {
+    opacity: 1;
+}
+
+/* Screenshot placeholder when no screenshot yet */
+.buglens-screenshot--empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 20px;
+    width: 100%;
+    color: var(--buglens-text-muted);
+    font-size: 13px;
+    cursor: default;
+}
+
+.buglens-screenshot--empty svg {
+    width: 20px;
+    height: 20px;
+    opacity: 0.5;
+}
+
+/* === Form Actions (Submit / Cancel) === */
+
+.buglens-form__actions {
+    display: flex;
+    gap: 10px;
+    padding-top: 4px;
+}
+
+.buglens-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--buglens-radius);
+    font-family: var(--buglens-font);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--buglens-transition),
+        transform var(--buglens-transition),
+        box-shadow var(--buglens-transition);
+    outline: none;
+    user-select: none;
+}
+
+.buglens-btn:focus-visible {
+    outline: 2px solid var(--buglens-color);
+    outline-offset: 2px;
+}
+
+.buglens-btn:active {
+    transform: scale(0.97);
+}
+
+/* Primary button — submit */
+.buglens-btn--primary {
+    flex: 1;
+    background: var(--buglens-color);
+    color: #1A1A2E;
+    font-weight: 600;
+}
+
+.buglens-btn--primary:hover {
+    background: var(--buglens-color-hover);
+    box-shadow: 0 2px 12px rgba(var(--buglens-color-rgb), 0.3);
+}
+
+.buglens-btn--primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Secondary button — cancel */
+.buglens-btn--secondary {
+    background: var(--buglens-bg-input);
+    color: var(--buglens-text-muted);
+    border: 1px solid var(--buglens-border);
+}
+
+.buglens-btn--secondary:hover {
+    background: var(--buglens-bg-light);
+    color: var(--buglens-text);
+}
+
+/* Loading spinner for submit button */
+.buglens-btn__spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: buglens-spin 600ms linear infinite;
+}
+
+@keyframes buglens-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ==========================================================================
+   Toast Notification
+   ========================================================================== */
+
+.buglens-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 2147483647;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    min-width: 260px;
+    max-width: 400px;
+    border-radius: var(--buglens-radius);
+    background: var(--buglens-bg);
+    color: var(--buglens-text);
+    font-size: 14px;
+    box-shadow: var(--buglens-shadow);
+    border-left: 3px solid var(--buglens-success);
+    transform: translateX(calc(100% + 24px));
+    opacity: 0;
+    transition: transform 350ms cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 250ms ease;
+    pointer-events: auto;
+}
+
+.buglens-toast--visible {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.buglens-toast--success {
+    border-left-color: var(--buglens-success);
+}
+
+.buglens-toast--error {
+    border-left-color: var(--buglens-error);
+}
+
+.buglens-toast__icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+}
+
+.buglens-toast--success .buglens-toast__icon {
+    color: var(--buglens-success);
+}
+
+.buglens-toast--error .buglens-toast__icon {
+    color: var(--buglens-error);
+}
+
+.buglens-toast__message {
+    flex: 1;
+    line-height: 1.4;
+}
+
+.buglens-toast__close {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--buglens-text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color var(--buglens-transition);
+}
+
+.buglens-toast__close:hover {
+    color: var(--buglens-text);
+}
+
+/* Auto-dismiss progress bar */
+.buglens-toast__progress {
+    position: absolute;
+    bottom: 0;
+    left: 3px;
+    right: 0;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.15);
+    border-bottom-right-radius: var(--buglens-radius);
+    overflow: hidden;
+}
+
+.buglens-toast__progress-bar {
+    height: 100%;
+    background: var(--buglens-success);
+    animation: buglens-toast-progress 3s linear forwards;
+    transform-origin: left;
+}
+
+.buglens-toast--error .buglens-toast__progress-bar {
+    background: var(--buglens-error);
+}
+
+@keyframes buglens-toast-progress {
+    from {
+        transform: scaleX(1);
+    }
+    to {
+        transform: scaleX(0);
+    }
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 520px) {
+    .buglens-form {
+        max-width: 100%;
+        border-top-left-radius: var(--buglens-radius-lg);
+        border-top-right-radius: var(--buglens-radius-lg);
+    }
+
+    .buglens-form__body {
+        padding: 14px 16px 16px;
+    }
+
+    .buglens-form__header {
+        padding: 8px 16px 12px;
+    }
+
+    .buglens-form__actions {
+        flex-direction: column;
+    }
+
+    .buglens-btn--secondary {
+        order: 1;
+    }
+
+    .buglens-toast {
+        left: 12px;
+        right: 12px;
+        max-width: none;
+        min-width: 0;
+    }
+
+    :root {
+        --buglens-fab-offset: 16px;
+        --buglens-fab-size: 50px;
+    }
+
+    .buglens-fab__icon {
+        width: 22px;
+        height: 22px;
+    }
+}
+
+@media (max-width: 360px) {
+    .buglens-form__body {
+        padding: 12px 12px 14px;
+        gap: 12px;
+    }
+
+    .buglens-input,
+    .buglens-textarea {
+        font-size: 16px; /* Prevent iOS zoom on focus */
+    }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .buglens-fab,
+    .buglens-fab__icon,
+    .buglens-highlight,
+    .buglens-tooltip,
+    .buglens-form,
+    .buglens-form-backdrop,
+    .buglens-toast,
+    .buglens-toast__progress-bar,
+    .buglens-btn {
+        transition-duration: 0ms !important;
+        animation-duration: 0ms !important;
+    }
+
+    .buglens-fab--pulse {
+        animation: none;
+    }
+}
