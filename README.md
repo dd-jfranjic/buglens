@@ -1,6 +1,6 @@
 # BugLens – Visual Bug Reporter for AI Agents
 
-![WordPress Plugin Version](https://img.shields.io/badge/version-2.0.0-blue)
+![WordPress Plugin Version](https://img.shields.io/badge/version-2.0.1-blue)
 ![WordPress Tested](https://img.shields.io/badge/WordPress-6.9%2B-green)
 ![PHP Version](https://img.shields.io/badge/PHP-8.0%2B-purple)
 ![License](https://img.shields.io/badge/license-GPL%20v2%2B-orange)
@@ -8,6 +8,46 @@
 **BugLens** is a WordPress plugin that bridges the gap between **visual bug reporting** and **AI-powered development workflows**. Users visually select any element on a page, capture a screenshot, and BugLens generates structured bug reports optimized for AI coding agents (Claude, GPT, Cursor, Copilot, etc.).
 
 Instead of vague descriptions like *"the button looks weird"*, BugLens captures the exact CSS selector, computed styles, bounding box, DOM context, console errors, and a screenshot — everything an AI agent needs to understand and fix the issue without guessing.
+
+---
+
+## Who Is This For?
+
+BugLens is built for **developers and teams who use AI coding agents** to build and maintain WordPress sites. It works best when you have **direct access to your server** — either local development, VPS, or dedicated hosting.
+
+### Supported AI Agents & Tools
+
+BugLens exports structured Markdown reports and a REST API that any AI coding agent can consume:
+
+| AI Agent | How It Works With BugLens |
+|----------|--------------------------|
+| **[Claude Code](https://docs.anthropic.com/en/docs/claude-code)** (Anthropic) | SSH into your server, run `cat wp-content/uploads/buglens/report-42.md`, Claude reads the selector + styles + screenshot and fixes the bug directly |
+| **[Codex CLI](https://github.com/openai/codex)** (OpenAI) | Same workflow — Codex reads the exported Markdown files from the filesystem |
+| **[Gemini CLI](https://github.com/google-gemini/gemini-cli)** (Google) | Point Gemini at the BugLens export directory, it parses the structured reports |
+| **[Cursor](https://cursor.sh/)** / **[Windsurf](https://codeium.com/windsurf)** | Open the project folder, reference BugLens report files in your AI chat |
+| **[GitHub Copilot CLI](https://githubnext.com/projects/copilot-cli)** | Use the REST API to fetch reports programmatically |
+| **Any MCP-compatible agent** | BugLens REST API can be wrapped as an MCP tool for seamless integration |
+
+### Typical Setup
+
+```
+┌─────────────────────────────────────────────────┐
+│  Your Server (Local / VPS / Dedicated)          │
+│                                                 │
+│  WordPress + BugLens                            │
+│    ├── wp-content/uploads/buglens/              │
+│    │   ├── report-42.md    ← AI reads this      │
+│    │   ├── report-43.md                         │
+│    │   ├── reports.json    ← index of all bugs  │
+│    │   └── screenshots/                         │
+│    └── wp-json/buglens/v1/ ← REST API           │
+│                                                 │
+│  AI Agent (Claude Code / Codex / Gemini CLI)    │
+│    └── reads reports → understands bug → fixes  │
+└─────────────────────────────────────────────────┘
+```
+
+> **Note**: The visual bug reporting (frontend widget) works on **any** WordPress hosting. The AI agent integration features (terminal, file browser, Markdown exports) are most useful when your AI agent has filesystem or API access to the server — typically local dev environments, VPS, or dedicated servers where you can run CLI tools.
 
 ---
 
