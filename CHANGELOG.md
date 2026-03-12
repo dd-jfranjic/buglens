@@ -5,6 +5,21 @@ All notable changes to BugLens will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] — 2026-03-12
+
+### Added
+- **Bridge API** — full filesystem access for AI coding agents via 12 REST endpoints (`/fs/read`, `/fs/write`, `/fs/create`, `/fs/delete`, `/fs/rename`, `/fs/list`, `/fs/search`, `/fs/info`, `/fs/diff`, `/fs/bulk-read`, `/fs/tree`, `/fs/wp-cli`)
+- **Bridge Security** — 4 layered security options: API key (always on), IP whitelist with proxy support (Cloudflare, X-Forwarded-For), time-limited tokens (SHA-256 hashed, configurable 15min–24h), path restrictions (allow/block lists), read-only mode
+- **`buglens-mcp` npm package** — MCP server with 15 tools (12 filesystem + 3 bug report) that runs via `npx buglens-mcp`, supporting all major AI coding agents
+- **"Connect Your AI Agent" settings page** — copy-paste config snippets for Claude Code, Claude Desktop, Cursor, Windsurf, OpenAI Codex, Gemini CLI, VS Code Copilot, Cline/Continue/JetBrains
+- **Token endpoint** — `/fs/token` generates short-lived authentication tokens for enhanced security
+- **Blocked paths** — wp-config.php, .htaccess, .htpasswd blocked by default on Bridge endpoints
+- **Path traversal protection** — blocks `..`, validates via `realpath()` within ABSPATH
+- **Bridge admin page** — security settings form with enable/disable, IP whitelist, token config, path restrictions, read-only mode
+
+### Changed
+- Plugin structure updated with `includes/class-buglens-bridge.php`, `includes/class-buglens-bridge-security.php`, `admin/views/bridge.php`, `admin/js/buglens-bridge.js`, and `mcp-server/` directory
+
 ## [2.0.1] — 2026-03-11
 
 ### Fixed

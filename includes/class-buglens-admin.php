@@ -62,6 +62,15 @@ class BugLens_Admin {
 
         add_submenu_page(
             'buglens-board',
+            __( 'Bridge', 'buglens' ),
+            __( 'Bridge', 'buglens' ),
+            'manage_options',
+            'buglens-bridge',
+            [ self::class, 'render_bridge_page' ]
+        );
+
+        add_submenu_page(
+            'buglens-board',
             __( 'Settings', 'buglens' ),
             __( 'Settings', 'buglens' ),
             'manage_options',
@@ -76,6 +85,10 @@ class BugLens_Admin {
     public static function register_settings(): void {
         register_setting( 'buglens_settings_group', 'buglens_settings', [
             'sanitize_callback' => [ self::class, 'sanitize_settings' ],
+        ] );
+
+        register_setting( 'buglens_bridge_group', 'buglens_bridge_settings', [
+            'sanitize_callback' => [ self::class, 'sanitize_bridge_settings' ],
         ] );
 
         add_settings_section(
@@ -150,6 +163,38 @@ class BugLens_Admin {
             'outerhtml_limit' => max( 500, min( 50000, intval( $input['outerhtml_limit'] ?? 5000 ) ) ),
             'capture_console' => ! empty( $input['capture_console'] ),
         ];
+    }
+
+    /**
+     * Sanitize Bridge settings on save.
+     *
+     * @param array $input Raw form input.
+     * @return array Sanitized settings.
+     */
+    public static function sanitize_bridge_settings( array $input ): array {
+        $valid_lifetimes = [ 900, 1800, 3600, 7200, 14400, 28800, 86400 ];
+        $lifetime        = intval( $input['token_lifetime'] ?? 3600 );
+
+        return [
+            'bridge_enabled'    => ! empty( $input['bridge_enabled'] ),
+            'ip_whitelist'      => sanitize_text_field( $input['ip_whitelist'] ?? '' ),
+            'token_enabled'     => ! empty( $input['token_enabled'] ),
+            'token_lifetime'    => in_array( $lifetime, $valid_lifetimes, true ) ? $lifetime : 3600,
+            'path_restrictions' => ! empty( $input['path_restrictions'] ),
+            'allowed_paths'     => sanitize_text_field( $input['allowed_paths'] ?? '' ),
+            'blocked_paths'     => sanitize_text_field( $input['blocked_paths'] ?? 'wp-config.php,.htaccess,.htpasswd' ),
+            'read_only'         => ! empty( $input['read_only'] ),
+        ];
+    }
+
+    /**
+     * Render the Bridge settings admin page.
+     */
+    public static function render_bridge_page(): void {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'You do not have sufficient permissions.', 'buglens' ) );
+        }
+        include BUGLENS_DIR . 'admin/views/bridge.php';
     }
 
     // =========================================================================
@@ -367,6 +412,7 @@ class BugLens_Admin {
             'buglens_page_buglens-settings',
             'buglens_page_buglens-files',
             'buglens_page_buglens-terminal',
+            'buglens_page_buglens-bridge',
         ];
 
         if ( ! in_array( $hook, $buglens_pages, true ) ) {
@@ -458,6 +504,17 @@ class BugLens_Admin {
                     'networkError'  => __( 'Network error. Please try again.', 'buglens' ),
                 ],
             ] );
+        }
+
+        // Bridge page needs snippet generator JS.
+        if ( $hook === 'buglens_page_buglens-bridge' ) {
+            wp_enqueue_script(
+                'buglens-bridge',
+                BUGLENS_URL . 'admin/js/buglens-bridge.js',
+                [],
+                BUGLENS_VERSION,
+                true
+            );
         }
     }
 

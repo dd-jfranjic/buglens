@@ -4,7 +4,7 @@ Donate link: https://2klika.hr
 Tags: bug-report, ai, developer-tools, debugging, screenshot
 Requires at least: 6.0
 Tested up to: 6.9
-Stable tag: 2.0.1
+Stable tag: 3.0.0
 Requires PHP: 8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -149,10 +149,13 @@ BugLens works on individual sites within a multisite network. Each site has its 
 
 == Changelog ==
 
-= 2.0.1 — 2026-03-11 =
-* **Fixed**: Output escaping for settings fields (Plugin Check compliance)
-* **Fixed**: Global variable prefixing in uninstall.php and board template
-* **Fixed**: Added phpcs annotations for terminal and file editor raw input handling
+= 3.0.0 — 2026-03-12 =
+* **New**: Bridge API — full filesystem access for AI coding agents via REST API
+* **New**: Bridge Security — API key + optional IP whitelist, time-limited tokens, path restrictions, read-only mode
+* **New**: buglens-mcp npm package — MCP server supporting Claude Code, Cursor, Windsurf, Codex, Gemini, VS Code, Cline, JetBrains
+* **New**: "Connect Your AI Agent" settings page with copy-paste config snippets for 8+ AI tools
+* **New**: 12 filesystem endpoints: read, write, create, delete, rename, list, search, info, diff, bulk-read, tree, wp-cli
+* **New**: 3 bug report endpoints exposed via MCP: list, detail, status update
 
 = 2.0.0 — 2026-03-11 =
 * **New**: Kanban board with drag-and-drop status management
@@ -183,6 +186,9 @@ BugLens works on individual sites within a multisite network. Each site has its 
 * Basic admin interface
 
 == Upgrade Notice ==
+
+= 3.0.0 =
+Major update: adds Bridge API for remote AI agent access on shared hosting. Includes buglens-mcp npm package with 15 MCP tools.
 
 = 2.0.0 =
 Major update: adds Kanban board, terminal, file browser, REST API, and AI-optimized exports. Recommended for all users.

@@ -3,7 +3,7 @@
  * Plugin Name: BugLens – Visual Bug Reporter for AI Agents
  * Plugin URI:  https://2klika.hr/buglens
  * Description: Visually select elements, capture screenshots, and create AI-optimized bug reports.
- * Version:     2.0.1
+ * Version:     3.0.0
  * Author:      2klika
  * Author URI:  https://2klika.hr
  * License:     GPL v2 or later
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'BUGLENS_VERSION', '2.0.1' );
+define( 'BUGLENS_VERSION', '3.0.0' );
 define( 'BUGLENS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'BUGLENS_URL', plugin_dir_url( __FILE__ ) );
 define( 'BUGLENS_BASENAME', plugin_basename( __FILE__ ) );
@@ -30,10 +30,13 @@ require_once BUGLENS_DIR . 'includes/class-buglens-widget.php';
 require_once BUGLENS_DIR . 'includes/class-buglens-admin.php';
 require_once BUGLENS_DIR . 'includes/class-buglens-terminal.php';
 require_once BUGLENS_DIR . 'includes/class-buglens-files.php';
+require_once BUGLENS_DIR . 'includes/class-buglens-bridge-security.php';
+require_once BUGLENS_DIR . 'includes/class-buglens-bridge.php';
 
 // Initialize.
 add_action( 'init', [ BugLens_CPT::class, 'register' ] );
 add_action( 'rest_api_init', [ BugLens_REST_API::class, 'register' ] );
+add_action( 'rest_api_init', [ BugLens_Bridge::class, 'register' ] );
 add_action( 'wp_enqueue_scripts', [ BugLens_Widget::class, 'maybe_enqueue' ] );
 
 // Admin.

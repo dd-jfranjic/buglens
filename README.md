@@ -1,6 +1,6 @@
 # BugLens – Visual Bug Reporter for AI Agents
 
-![WordPress Plugin Version](https://img.shields.io/badge/version-2.0.1-blue)
+![WordPress Plugin Version](https://img.shields.io/badge/version-3.0.0-blue)
 ![WordPress Tested](https://img.shields.io/badge/WordPress-6.9%2B-green)
 ![PHP Version](https://img.shields.io/badge/PHP-8.0%2B-purple)
 ![License](https://img.shields.io/badge/license-GPL%20v2%2B-orange)
@@ -13,22 +13,44 @@ Instead of vague descriptions like *"the button looks weird"*, BugLens captures 
 
 ## Who Is This For?
 
-BugLens is built for **developers and teams who use AI coding agents** to build and maintain WordPress sites. It works best when you have **direct access to your server** — either local development, VPS, or dedicated hosting.
+BugLens is built for **developers and teams who use AI coding agents** to build and maintain WordPress sites.
+
+**v3.0 introduces the Bridge API** — now BugLens works on **shared hosting** too. No SSH, no CLI installation needed. Your AI agent connects remotely via MCP.
 
 ### Supported AI Agents & Tools
 
-BugLens exports structured Markdown reports and a REST API that any AI coding agent can consume:
+| AI Agent | Connection Method |
+|----------|------------------|
+| **[Claude Code](https://docs.anthropic.com/en/docs/claude-code)** (Anthropic) | MCP Bridge (remote) or direct filesystem |
+| **[Claude Desktop](https://claude.ai)** (Anthropic) | MCP Bridge (remote) |
+| **[Cursor](https://cursor.sh/)** / **[Windsurf](https://codeium.com/windsurf)** | MCP Bridge (remote) or local filesystem |
+| **[Codex CLI](https://github.com/openai/codex)** (OpenAI) | MCP Bridge (remote) or direct filesystem |
+| **[Gemini CLI](https://github.com/google-gemini/gemini-cli)** (Google) | MCP Bridge (remote) or direct filesystem |
+| **[VS Code Copilot](https://code.visualstudio.com/)** | MCP Bridge (remote) |
+| **[Cline](https://github.com/cline/cline)** / **[Continue](https://continue.dev/)** / **JetBrains** | MCP Bridge (remote) |
 
-| AI Agent | How It Works With BugLens |
-|----------|--------------------------|
-| **[Claude Code](https://docs.anthropic.com/en/docs/claude-code)** (Anthropic) | SSH into your server, run `cat wp-content/uploads/buglens/report-42.md`, Claude reads the selector + styles + screenshot and fixes the bug directly |
-| **[Codex CLI](https://github.com/openai/codex)** (OpenAI) | Same workflow — Codex reads the exported Markdown files from the filesystem |
-| **[Gemini CLI](https://github.com/google-gemini/gemini-cli)** (Google) | Point Gemini at the BugLens export directory, it parses the structured reports |
-| **[Cursor](https://cursor.sh/)** / **[Windsurf](https://codeium.com/windsurf)** | Open the project folder, reference BugLens report files in your AI chat |
-| **[GitHub Copilot CLI](https://githubnext.com/projects/copilot-cli)** | Use the REST API to fetch reports programmatically |
-| **Any MCP-compatible agent** | BugLens REST API can be wrapped as an MCP tool for seamless integration |
+### Two Ways to Connect
 
-### Typical Setup
+**Option A: Bridge (Shared Hosting / Remote)** — v3.0 NEW
+
+Your AI agent runs locally and connects to your WordPress site over HTTPS. No server-side installation needed beyond the plugin.
+
+```
+┌──────────────────┐         HTTPS          ┌──────────────────────┐
+│  Your Computer   │ ◄───────────────────── │  Shared Hosting      │
+│                  │                         │                      │
+│  AI Agent        │   MCP (stdio)           │  WordPress + BugLens │
+│  (Claude, etc.)  │ ◄──────────┐           │    └── Bridge API    │
+│                  │            │           │        /fs/read       │
+│                  │   buglens-mcp           │        /fs/write      │
+│                  │   (npm package)         │        /fs/search     │
+└──────────────────┘                         │        /fs/tree       │
+                                             └──────────────────────┘
+```
+
+**Option B: Direct Filesystem (VPS / Dedicated / Local)**
+
+AI agent runs on the same server with direct file access.
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -37,7 +59,6 @@ BugLens exports structured Markdown reports and a REST API that any AI coding ag
 │  WordPress + BugLens                            │
 │    ├── wp-content/uploads/buglens/              │
 │    │   ├── report-42.md    ← AI reads this      │
-│    │   ├── report-43.md                         │
 │    │   ├── reports.json    ← index of all bugs  │
 │    │   └── screenshots/                         │
 │    └── wp-json/buglens/v1/ ← REST API           │
@@ -46,8 +67,6 @@ BugLens exports structured Markdown reports and a REST API that any AI coding ag
 │    └── reads reports → understands bug → fixes  │
 └─────────────────────────────────────────────────┘
 ```
-
-> **Note**: The visual bug reporting (frontend widget) works on **any** WordPress hosting. The AI agent integration features (terminal, file browser, Markdown exports) are most useful when your AI agent has filesystem or API access to the server — typically local dev environments, VPS, or dedicated servers where you can run CLI tools.
 
 ---
 
@@ -183,7 +202,66 @@ done
 - **Download** — download any file directly
 - **Path-safe** — all file operations are sandboxed to the BugLens uploads directory
 
-### REST API
+### Bridge API (v3.0 NEW)
+
+Full filesystem access for AI coding agents over HTTPS. Works on **shared hosting** — no SSH needed.
+
+- **12 filesystem endpoints** — read, write, create, delete, rename, list, search, info, diff, bulk-read, tree, wp-cli
+- **3 bug report endpoints** — list, detail, status update (via MCP)
+- **`buglens-mcp` npm package** — zero-install MCP server (`npx buglens-mcp`)
+- **Config snippets** — copy-paste setup for 8+ AI tools (Claude Code, Claude Desktop, Cursor, Windsurf, Codex, Gemini, VS Code, Cline/JetBrains)
+- **4-layer security** — API key (always on) + optional IP whitelist, time-limited tokens, path restrictions, read-only mode
+- **Path traversal protection** — blocks `..`, validates via `realpath()` within ABSPATH
+- **Blocked paths** — wp-config.php, .htaccess, .htpasswd blocked by default
+
+#### Quick Setup
+
+1. Activate BugLens on your WordPress site
+2. Go to **BugLens > Bridge**, enable the Bridge API
+3. Copy the config snippet for your AI tool
+4. Paste into your tool's MCP config
+
+**Claude Code:**
+```bash
+BUGLENS_URL=https://yoursite.com BUGLENS_KEY=your_key \
+  claude mcp add buglens -- npx -y buglens-mcp
+```
+
+**Cursor / Claude Desktop / Windsurf / Gemini:**
+```json
+{
+  "mcpServers": {
+    "buglens": {
+      "command": "npx",
+      "args": ["-y", "buglens-mcp"],
+      "env": {
+        "BUGLENS_URL": "https://yoursite.com",
+        "BUGLENS_KEY": "your_key"
+      }
+    }
+  }
+}
+```
+
+#### Bridge Endpoints
+
+```
+POST /wp-json/buglens/v1/fs/read       — read file contents
+POST /wp-json/buglens/v1/fs/write      — write to existing file
+POST /wp-json/buglens/v1/fs/create     — create new file/directory
+POST /wp-json/buglens/v1/fs/delete     — delete file/empty directory
+POST /wp-json/buglens/v1/fs/rename     — rename/move file
+POST /wp-json/buglens/v1/fs/list       — list directory contents
+POST /wp-json/buglens/v1/fs/search     — search across files (like grep)
+POST /wp-json/buglens/v1/fs/info       — file metadata (size, perms, mime)
+POST /wp-json/buglens/v1/fs/diff       — compare content against file on disk
+POST /wp-json/buglens/v1/fs/bulk-read  — read multiple files at once (max 20)
+POST /wp-json/buglens/v1/fs/tree       — recursive directory tree
+POST /wp-json/buglens/v1/fs/wp-cli     — execute WP-CLI command (if available)
+POST /wp-json/buglens/v1/fs/token      — generate time-limited auth token
+```
+
+### Reports REST API
 ```
 GET    /wp-json/buglens/v1/reports              — list reports (paginated, filterable)
 POST   /wp-json/buglens/v1/reports              — create report (with metadata + screenshot)
@@ -332,25 +410,33 @@ After activation, go to **BugLens > Settings**:
 
 ```
 buglens/
-├── buglens.php                    # Main plugin file
-├── uninstall.php                  # Clean removal of all data
+├── buglens.php                         # Main plugin file
+├── uninstall.php                       # Clean removal of all data
 ├── includes/
-│   ├── class-buglens-cpt.php      # Custom Post Type + meta fields
-│   ├── class-buglens-rest-api.php # REST API (CRUD + screenshot)
-│   ├── class-buglens-export.php   # Markdown + JSON export
-│   ├── class-buglens-widget.php   # Frontend widget loading
-│   ├── class-buglens-admin.php    # Admin menus, settings, assets
-│   ├── class-buglens-terminal.php # Web terminal (proc_open)
-│   └── class-buglens-files.php    # File browser (AJAX)
+│   ├── class-buglens-cpt.php           # Custom Post Type + meta fields
+│   ├── class-buglens-rest-api.php      # REST API (CRUD + screenshot)
+│   ├── class-buglens-export.php        # Markdown + JSON export
+│   ├── class-buglens-widget.php        # Frontend widget loading
+│   ├── class-buglens-admin.php         # Admin menus, settings, assets
+│   ├── class-buglens-terminal.php      # Web terminal (proc_open)
+│   ├── class-buglens-files.php         # File browser (AJAX)
+│   ├── class-buglens-bridge.php        # Bridge REST API (12 FS endpoints)
+│   └── class-buglens-bridge-security.php # Bridge security layer
 ├── admin/
-│   ├── css/buglens-admin.css      # Admin styles
-│   ├── js/                        # Board, terminal, files, settings JS
-│   └── views/                     # PHP templates
+│   ├── css/buglens-admin.css           # Admin styles
+│   ├── js/                             # Board, terminal, files, bridge, settings JS
+│   └── views/                          # PHP templates (board, settings, bridge)
 ├── public/
-│   ├── css/buglens-widget.css     # Frontend widget styles
-│   └── js/buglens-widget.js       # Frontend widget logic
-├── vendor/xterm/                  # xterm.js terminal emulator
-└── languages/buglens.pot          # Translation template
+│   ├── css/buglens-widget.css          # Frontend widget styles
+│   └── js/buglens-widget.js            # Frontend widget logic
+├── mcp-server/                         # buglens-mcp npm package
+│   ├── package.json                    # npm config (npx buglens-mcp)
+│   ├── bin/buglens-mcp.js              # CLI entry point
+│   └── src/
+│       ├── index.js                    # MCP server (15 tools)
+│       └── client.js                   # HTTP client for Bridge API
+├── vendor/xterm/                       # xterm.js terminal emulator
+└── languages/buglens.pot               # Translation template
 ```
 
 ---
@@ -365,6 +451,8 @@ buglens/
 - **Path traversal protection** — file operations sandboxed via `realpath()` + prefix check
 - **XSS prevention** — safe DOM methods (`textContent`, `createElement`), no `innerHTML`
 - **Terminal safeguards** — warning dialog, 15-min session timeout, admin-only
+- **Bridge security** (v3.0) — 4 optional layers: IP whitelist, time-limited tokens (SHA-256 hashed), path restrictions (allow/block lists), read-only mode
+- **Blocked paths** (v3.0) — wp-config.php, .htaccess, .htpasswd blocked by default on Bridge endpoints
 
 ---
 
@@ -413,3 +501,4 @@ Built by [2klika](https://2klika.hr) for AI-assisted WordPress development workf
 **Third-party libraries:**
 - [xterm.js](https://xtermjs.org/) v6.0.0 — Terminal emulator (MIT License)
 - [html2canvas](https://html2canvas.hertzen.com/) — Screenshot capture (loaded from CDN, MIT License)
+- [@modelcontextprotocol/sdk](https://github.com/modelcontextprotocol/typescript-sdk) — MCP server SDK for buglens-mcp (MIT License)

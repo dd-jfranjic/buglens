@@ -1,0 +1,28 @@
+{
+  "name": "buglens-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for BugLens — connect AI coding agents to WordPress sites on shared hosting",
+  "keywords": ["mcp", "wordpress", "buglens", "ai", "coding", "remote", "shared-hosting"],
+  "license": "GPL-2.0-or-later",
+  "author": "2klika <info@2klika.hr>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/2klika/buglens-mcp"
+  },
+  "type": "module",
+  "bin": {
+    "buglens-mcp": "./bin/buglens-mcp.js"
+  },
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.0",
+    "zod": "^3.23.0"
+  },
+  "files": [
+    "bin/",
+    "src/"
+  ]
+}

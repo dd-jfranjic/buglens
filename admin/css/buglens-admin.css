@@ -443,3 +443,38 @@
 @media (max-width: 782px) {
     .buglens-files-layout { grid-template-columns: 1fr; }
 }
+
+/* === Bridge Settings === */
+.buglens-bridge-wrap { max-width: 900px; }
+
+.buglens-bridge-snippets { margin-top: 20px; }
+
+.buglens-snippet {
+    background: #f6f7f7;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.buglens-snippet__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.buglens-snippet__header h3 { margin: 0; font-size: 14px; }
+
+.buglens-snippet__code {
+    background: #1d2327;
+    color: #50fa7b;
+    padding: 12px 16px;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 1.5;
+    overflow-x: auto;
+    white-space: pre;
+    margin: 8px 0 0;
+    max-height: 300px;
+}
