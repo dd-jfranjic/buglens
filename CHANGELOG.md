@@ -5,6 +5,20 @@ All notable changes to BugLens will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.1] — 2026-03-22
+
+### Removed
+- **Web terminal** — removed built-in terminal (xterm.js, proc_open) per WordPress.org plugin review requirements
+- **File browser** — removed admin file browser (CodeMirror editor) per WordPress.org plugin review requirements
+- **xterm.js vendor** — removed bundled xterm.js library
+
+### Fixed
+- **Plugin URI** — corrected to valid URL (`https://2klika.hr`)
+- **Contributors** — added `jfranjic42` WordPress.org username to readme.txt
+- **ABSPATH usage** — removed hardcoded ABSPATH references (were in terminal code, now removed)
+- **Data sanitization** — resolved unsanitized input issues (were in terminal/files code, now removed)
+- **CSS cleanup** — removed terminal and file browser styles from admin stylesheet
+
 ## [3.0.0] — 2026-03-12
 
 ### Added

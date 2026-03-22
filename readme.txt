@@ -1,5 +1,5 @@
 === BugLens – Visual Bug Reporter for AI Agents ===
-Contributors: 2klika
+Contributors: jfranjic42, 2klika
 Donate link: https://2klika.hr
 Tags: bug-report, ai, developer-tools, debugging, screenshot
 Requires at least: 6.0
@@ -49,8 +49,6 @@ Most bug reporters are designed for humans. BugLens is designed for **AI agents*
 
 **Developer Tools**
 
-* Built-in web terminal (xterm.js) for quick server commands
-* File browser with CodeMirror editor for export files
 * REST API with API key authentication
 
 **Export System**
@@ -143,9 +141,7 @@ BugLens works on individual sites within a multisite network. Each site has its 
 3. Bug report form — slide-up panel with title, description, and captured data
 4. Admin Kanban board — drag-and-drop bug reports between status columns
 5. Report detail modal — full report with screenshot, element info, styles, HTML
-6. Built-in terminal — web-based shell with xterm.js
-7. File browser — tree view with CodeMirror editor
-8. Settings page — API key, widget position, visibility, color
+6. Settings page — API key, widget position, visibility, color
 
 == Changelog ==
 
@@ -159,8 +155,6 @@ BugLens works on individual sites within a multisite network. Each site has its 
 
 = 2.0.0 — 2026-03-11 =
 * **New**: Kanban board with drag-and-drop status management
-* **New**: Built-in web terminal with xterm.js (session persistence, command history)
-* **New**: File browser with CodeMirror editor for export files
 * **New**: REST API with full CRUD operations and API key authentication
 * **New**: Automatic Markdown and JSON export for AI agent consumption
 * **New**: Console error capture (auto-collects JS errors on the page)
@@ -191,7 +185,7 @@ BugLens works on individual sites within a multisite network. Each site has its 
 Major update: adds Bridge API for remote AI agent access on shared hosting. Includes buglens-mcp npm package with 15 MCP tools.
 
 = 2.0.0 =
-Major update: adds Kanban board, terminal, file browser, REST API, and AI-optimized exports. Recommended for all users.
+Major update: adds Kanban board, REST API, and AI-optimized exports. Recommended for all users.
 
 = 1.0.0 =
 Initial release.

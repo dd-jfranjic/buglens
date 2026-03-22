@@ -97,16 +97,6 @@ Click any card for the full picture: screenshot, element selector, computed styl
 
 ![Report Modal](assets/screenshots/screenshot-5.png)
 
-### Built-in Terminal
-A real shell inside WordPress admin (xterm.js). Run quick server commands without switching context. Admin-only with safety warnings.
-
-![Terminal](assets/screenshots/screenshot-6.png)
-
-### File Browser
-Browse all exported Markdown reports, JSON index, and screenshots. Edit files with CodeMirror syntax highlighting.
-
-![File Browser](assets/screenshots/screenshot-7.png)
-
 ### Settings
 Configure the API key, widget position, visibility, color, outerHTML limit, and console error capture.
 
@@ -188,19 +178,6 @@ done
 - **Detail modal** — click any card to see the full report with screenshot, element details, computed styles, outerHTML, console errors
 - **Page filter** — filter reports by the page URL they were reported on
 - **Delete reports** — with confirmation, removes report, screenshot, and export files
-
-### Built-in Terminal
-- **Web-based terminal** — full shell access via xterm.js in the WordPress admin
-- **Session management** — persistent CWD across commands, 15-minute timeout
-- **History** — arrow keys navigate command history
-- **Safety** — warning dialog on first use, requires explicit acceptance
-
-### File Browser
-- **Browse export files** — tree view of all BugLens export files (Markdown reports, JSON index, screenshots)
-- **CodeMirror editor** — syntax-highlighted editing of text files
-- **Image preview** — inline preview of screenshots
-- **Download** — download any file directly
-- **Path-safe** — all file operations are sandboxed to the BugLens uploads directory
 
 ### Bridge API (v3.0 NEW)
 
@@ -418,8 +395,6 @@ buglens/
 │   ├── class-buglens-export.php        # Markdown + JSON export
 │   ├── class-buglens-widget.php        # Frontend widget loading
 │   ├── class-buglens-admin.php         # Admin menus, settings, assets
-│   ├── class-buglens-terminal.php      # Web terminal (proc_open)
-│   ├── class-buglens-files.php         # File browser (AJAX)
 │   ├── class-buglens-bridge.php        # Bridge REST API (12 FS endpoints)
 │   └── class-buglens-bridge-security.php # Bridge security layer
 ├── admin/
@@ -435,7 +410,6 @@ buglens/
 │   └── src/
 │       ├── index.js                    # MCP server (15 tools)
 │       └── client.js                   # HTTP client for Bridge API
-├── vendor/xterm/                       # xterm.js terminal emulator
 └── languages/buglens.pot               # Translation template
 ```
 
@@ -450,7 +424,6 @@ buglens/
 - **Output escaping** — `esc_html()`, `esc_attr()`, `esc_url()`, `wp_kses()`
 - **Path traversal protection** — file operations sandboxed via `realpath()` + prefix check
 - **XSS prevention** — safe DOM methods (`textContent`, `createElement`), no `innerHTML`
-- **Terminal safeguards** — warning dialog, 15-min session timeout, admin-only
 - **Bridge security** (v3.0) — 4 optional layers: IP whitelist, time-limited tokens (SHA-256 hashed), path restrictions (allow/block lists), read-only mode
 - **Blocked paths** (v3.0) — wp-config.php, .htaccess, .htpasswd blocked by default on Bridge endpoints
 
@@ -499,6 +472,5 @@ GPL v2 or later. See [LICENSE](LICENSE).
 Built by [2klika](https://2klika.hr) for AI-assisted WordPress development workflows.
 
 **Third-party libraries:**
-- [xterm.js](https://xtermjs.org/) v6.0.0 — Terminal emulator (MIT License)
 - [html2canvas](https://html2canvas.hertzen.com/) — Screenshot capture (loaded from CDN, MIT License)
 - [@modelcontextprotocol/sdk](https://github.com/modelcontextprotocol/typescript-sdk) — MCP server SDK for buglens-mcp (MIT License)

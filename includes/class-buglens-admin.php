@@ -42,23 +42,6 @@ class BugLens_Admin {
             'edit.php?post_type=buglens_report'
         );
 
-        add_submenu_page(
-            'buglens-board',
-            __( 'Files', 'buglens' ),
-            __( 'Files', 'buglens' ),
-            'manage_options',
-            'buglens-files',
-            [ self::class, 'render_files_page' ]
-        );
-
-        add_submenu_page(
-            'buglens-board',
-            __( 'Terminal', 'buglens' ),
-            __( 'Terminal', 'buglens' ),
-            'manage_options',
-            'buglens-terminal',
-            [ self::class, 'render_terminal_page' ]
-        );
 
         add_submenu_page(
             'buglens-board',
@@ -378,20 +361,6 @@ class BugLens_Admin {
         include BUGLENS_DIR . 'admin/views/board.php';
     }
 
-    public static function render_files_page(): void {
-        if ( ! current_user_can( 'manage_options' ) ) {
-            wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'buglens' ) );
-        }
-        include BUGLENS_DIR . 'admin/views/files.php';
-    }
-
-    public static function render_terminal_page(): void {
-        if ( ! current_user_can( 'manage_options' ) ) {
-            wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'buglens' ) );
-        }
-        include BUGLENS_DIR . 'admin/views/terminal.php';
-    }
-
     public static function render_settings_page(): void {
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'buglens' ) );
@@ -410,8 +379,6 @@ class BugLens_Admin {
         $buglens_pages = [
             'toplevel_page_buglens-board',
             'buglens_page_buglens-settings',
-            'buglens_page_buglens-files',
-            'buglens_page_buglens-terminal',
             'buglens_page_buglens-bridge',
         ];
 
@@ -439,43 +406,6 @@ class BugLens_Admin {
                 'restUrl' => rest_url( 'buglens/v1/' ),
                 'nonce'   => wp_create_nonce( 'wp_rest' ),
                 'apiKey'  => get_option( 'buglens_api_key', '' ),
-            ] );
-        }
-
-        // Terminal page needs xterm.js.
-        if ( $hook === 'buglens_page_buglens-terminal' ) {
-            wp_enqueue_style( 'xterm', BUGLENS_URL . 'vendor/xterm/xterm.css', [], '6.0.0' );
-            wp_enqueue_script( 'xterm', BUGLENS_URL . 'vendor/xterm/xterm.min.js', [], '6.0.0', true );
-            wp_enqueue_script( 'xterm-fit', BUGLENS_URL . 'vendor/xterm/xterm-addon-fit.min.js', [ 'xterm' ], '0.11.0', true );
-            wp_enqueue_script(
-                'buglens-terminal',
-                BUGLENS_URL . 'admin/js/buglens-terminal.js',
-                [ 'xterm', 'xterm-fit' ],
-                BUGLENS_VERSION,
-                true
-            );
-            wp_localize_script( 'buglens-terminal', 'buglensTerminal', [
-                'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-                'nonce'   => wp_create_nonce( 'buglens_terminal' ),
-                'abspath' => ABSPATH,
-                'home'    => getenv( 'HOME' ) ?: '/root',
-            ] );
-        }
-
-        // Files page needs CodeMirror + files JS.
-        if ( $hook === 'buglens_page_buglens-files' ) {
-            $cm_settings = wp_enqueue_code_editor( [ 'type' => 'application/json' ] );
-            wp_enqueue_script(
-                'buglens-files',
-                BUGLENS_URL . 'admin/js/buglens-files.js',
-                [ 'wp-codemirror' ],
-                BUGLENS_VERSION,
-                true
-            );
-            wp_localize_script( 'buglens-files', 'buglensFiles', [
-                'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
-                'nonce'      => wp_create_nonce( 'buglens_files' ),
-                'cmSettings' => $cm_settings,
             ] );
         }
 

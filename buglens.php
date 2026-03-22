@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: BugLens – Visual Bug Reporter for AI Agents
- * Plugin URI:  https://2klika.hr/buglens
+ * Plugin URI:  https://2klika.hr
  * Description: Visually select elements, capture screenshots, and create AI-optimized bug reports.
  * Version:     3.0.0
  * Author:      2klika
@@ -28,8 +28,6 @@ require_once BUGLENS_DIR . 'includes/class-buglens-rest-api.php';
 require_once BUGLENS_DIR . 'includes/class-buglens-export.php';
 require_once BUGLENS_DIR . 'includes/class-buglens-widget.php';
 require_once BUGLENS_DIR . 'includes/class-buglens-admin.php';
-require_once BUGLENS_DIR . 'includes/class-buglens-terminal.php';
-require_once BUGLENS_DIR . 'includes/class-buglens-files.php';
 require_once BUGLENS_DIR . 'includes/class-buglens-bridge-security.php';
 require_once BUGLENS_DIR . 'includes/class-buglens-bridge.php';
 
@@ -45,16 +43,6 @@ add_action( 'admin_init', [ BugLens_Admin::class, 'register_settings' ] );
 add_action( 'admin_enqueue_scripts', [ BugLens_Admin::class, 'enqueue_admin_assets' ] );
 add_action( 'wp_ajax_buglens_regenerate_key', [ BugLens_Admin::class, 'ajax_regenerate_key' ] );
 
-// Terminal AJAX.
-add_action( 'wp_ajax_buglens_terminal_execute', [ BugLens_Terminal::class, 'ajax_execute' ] );
-add_action( 'wp_ajax_buglens_terminal_start', [ BugLens_Terminal::class, 'ajax_start_session' ] );
-add_action( 'wp_ajax_buglens_terminal_end', [ BugLens_Terminal::class, 'ajax_end_session' ] );
-
-// Files AJAX.
-add_action( 'wp_ajax_buglens_files_list', [ BugLens_Files::class, 'ajax_list' ] );
-add_action( 'wp_ajax_buglens_files_read', [ BugLens_Files::class, 'ajax_read' ] );
-add_action( 'wp_ajax_buglens_files_write', [ BugLens_Files::class, 'ajax_write' ] );
-add_action( 'wp_ajax_buglens_files_download', [ BugLens_Files::class, 'ajax_download' ] );
 
 /**
  * Cleanup on report delete — remove screenshot + export files before post is gone.
