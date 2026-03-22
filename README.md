@@ -1,6 +1,6 @@
 # BugLens – Visual Bug Reporter for AI Agents
 
-![WordPress Plugin Version](https://img.shields.io/badge/version-3.0.0-blue)
+![WordPress Plugin Version](https://img.shields.io/badge/version-3.0.1-blue)
 ![WordPress Tested](https://img.shields.io/badge/WordPress-6.9%2B-green)
 ![PHP Version](https://img.shields.io/badge/PHP-8.0%2B-purple)
 ![License](https://img.shields.io/badge/license-GPL%20v2%2B-orange)
