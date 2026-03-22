@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: BugLens – Visual Bug Reporter for AI Agents
- * Plugin URI:  https://2klika.hr
+ * Plugin URI:  https://github.com/dd-jfranjic/buglens
  * Description: Visually select elements, capture screenshots, and create AI-optimized bug reports.
  * Version:     3.1.0
  * Author:      2klika
