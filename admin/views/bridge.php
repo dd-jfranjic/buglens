@@ -89,9 +89,9 @@ $buglens_lifetime_options = [
                     <br /><br />
                     <label for="buglens-token-lifetime"><?php echo esc_html__( 'Token lifetime:', 'buglens' ); ?></label>
                     <select id="buglens-token-lifetime" name="buglens_bridge_settings[token_lifetime]">
-                        <?php foreach ( $buglens_lifetime_options as $value => $label ) : ?>
-                            <option value="<?php echo esc_attr( $value ); ?>" <?php selected( $buglens_bridge['token_lifetime'], $value ); ?>>
-                                <?php echo esc_html( $label ); ?>
+                        <?php foreach ( $buglens_lifetime_options as $buglens_value => $buglens_label ) : ?>
+                            <option value="<?php echo esc_attr( $buglens_value ); ?>" <?php selected( $buglens_bridge['token_lifetime'], $buglens_value ); ?>>
+                                <?php echo esc_html( $buglens_label ); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
