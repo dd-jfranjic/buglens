@@ -159,6 +159,15 @@ export async function startServer() {
     }
   );
 
+  server.tool('wp_cli',
+    'Execute a WP-CLI command on the WordPress site (if available)',
+    { command: z.string().describe('WP-CLI command without the "wp" prefix, e.g. "plugin list" or "option get siteurl"') },
+    async ({ command }) => {
+      const data = await client.wpCli(command);
+      return { content: [{ type: 'text', text: data.output || '(no output)' }] };
+    }
+  );
+
   // --- Bug Reports ---
 
   server.tool('get_bug_reports',

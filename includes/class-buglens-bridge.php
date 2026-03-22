@@ -2,8 +2,8 @@
 /**
  * BugLens Bridge — Filesystem REST API for AI agents and external tools.
  *
- * Provides 11 filesystem endpoints (read, write, create, delete, rename,
- * list, search, info, diff, bulk-read, tree) plus a token generator.
+ * Provides 12 filesystem endpoints (read, write, create, delete, rename,
+ * list, search, info, diff, bulk-read, tree, wp-cli) plus a token generator.
  * All endpoints are POST to avoid query-string length limits.
  *
  * Security is delegated to BugLens_Bridge_Security (API key, IP whitelist,
@@ -90,6 +90,7 @@ class BugLens_Bridge {
 			'/fs/create'    => [ 'callback' => 'create_file',      'mode' => 'write' ],
 			'/fs/delete'    => [ 'callback' => 'delete_file',      'mode' => 'write' ],
 			'/fs/rename'    => [ 'callback' => 'rename_file',      'mode' => 'write' ],
+			'/fs/wp-cli'    => [ 'callback' => 'wp_cli',           'mode' => 'write' ],
 		];
 
 		foreach ( $routes as $route => $config ) {
@@ -938,7 +939,129 @@ class BugLens_Bridge {
 	}
 
 	// -------------------------------------------------------------------------
-	// 12. generate_token
+	// 12. wp_cli
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Execute a WP-CLI command.
+	 *
+	 * Returns 501 if proc_open is unavailable or WP-CLI binary not found.
+	 *
+	 * @param WP_REST_Request $request Contains: command (required).
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public static function wp_cli( WP_REST_Request $request ) {
+		$command = $request->get_param( 'command' );
+		if ( ! is_string( $command ) || $command === '' ) {
+			return self::error( 'The "command" parameter is required.', 400 );
+		}
+
+		if ( ! function_exists( 'proc_open' ) ) {
+			return self::error( 'WP-CLI is not available: proc_open is disabled.', 501 );
+		}
+
+		// Find wp-cli binary.
+		$wp_bin    = null;
+		$candidates = [
+			'/usr/local/bin/wp',
+			'/usr/bin/wp',
+			ABSPATH . 'wp-cli.phar',
+		];
+
+		foreach ( $candidates as $candidate ) {
+			if ( file_exists( $candidate ) && is_executable( $candidate ) ) {
+				$wp_bin = $candidate;
+				break;
+			}
+			if ( file_exists( $candidate ) && str_ends_with( $candidate, '.phar' ) ) {
+				$wp_bin = 'php ' . escapeshellarg( $candidate );
+				break;
+			}
+		}
+
+		if ( $wp_bin === null ) {
+			return self::error( 'WP-CLI binary not found.', 501 );
+		}
+
+		$full_command = $wp_bin . ' ' . $command . ' --path=' . escapeshellarg( ABSPATH );
+
+		$descriptors = [
+			0 => [ 'pipe', 'r' ],
+			1 => [ 'pipe', 'w' ],
+			2 => [ 'pipe', 'w' ],
+		];
+
+		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.system_calls_proc_open -- WP-CLI execution requires proc_open. Admin-only with API key auth.
+		$process = proc_open( $full_command, $descriptors, $pipes );
+		if ( ! is_resource( $process ) ) {
+			return self::error( 'Failed to execute WP-CLI command.', 500 );
+		}
+
+		fclose( $pipes[0] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
+
+		$stdout = '';
+		$stderr = '';
+		$start  = time();
+
+		stream_set_blocking( $pipes[1], false );
+		stream_set_blocking( $pipes[2], false );
+
+		while ( true ) {
+			$read   = [ $pipes[1], $pipes[2] ];
+			$write  = null;
+			$except = null;
+
+			if ( time() - $start > 30 ) {
+				proc_terminate( $process );
+				fclose( $pipes[1] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
+				fclose( $pipes[2] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
+				proc_close( $process );
+				return self::error( 'WP-CLI command timed out (30s).', 504 );
+			}
+
+			$changed = @stream_select( $read, $write, $except, 1 );
+			if ( $changed === false ) {
+				break;
+			}
+
+			foreach ( $read as $pipe ) {
+				$data = fread( $pipe, 8192 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread
+				if ( $data !== false && $data !== '' ) {
+					if ( $pipe === $pipes[1] ) {
+						$stdout .= $data;
+					} else {
+						$stderr .= $data;
+					}
+				}
+			}
+
+			$status = proc_get_status( $process );
+			if ( ! $status['running'] ) {
+				$stdout .= stream_get_contents( $pipes[1] );
+				$stderr .= stream_get_contents( $pipes[2] );
+				break;
+			}
+		}
+
+		fclose( $pipes[1] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
+		fclose( $pipes[2] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
+
+		$exit_code = proc_close( $process );
+
+		$output = trim( $stdout );
+		if ( $stderr !== '' ) {
+			$output .= ( $output !== '' ? "\n" : '' ) . trim( $stderr );
+		}
+
+		return new WP_REST_Response( [
+			'command'   => $command,
+			'output'    => $output,
+			'exit_code' => $exit_code,
+		], 200 );
+	}
+
+	// -------------------------------------------------------------------------
+	// 13. generate_token
 	// -------------------------------------------------------------------------
 
 	/**

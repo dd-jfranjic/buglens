@@ -3,7 +3,7 @@
  * Plugin Name: BugLens – Visual Bug Reporter for AI Agents
  * Plugin URI:  https://2klika.hr
  * Description: Visually select elements, capture screenshots, and create AI-optimized bug reports.
- * Version:     3.0.2
+ * Version:     3.1.0
  * Author:      2klika
  * Author URI:  https://2klika.hr
  * License:     GPL v2 or later
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'BUGLENS_VERSION', '3.0.2' );
+define( 'BUGLENS_VERSION', '3.1.0' );
 define( 'BUGLENS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'BUGLENS_URL', plugin_dir_url( __FILE__ ) );
 define( 'BUGLENS_BASENAME', plugin_basename( __FILE__ ) );
