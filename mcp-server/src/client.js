@@ -129,11 +129,6 @@ export class BugLensClient {
     return this.request('/fs/tree', { body: { path, depth, pattern } });
   }
 
-  async wpCli(command) {
-    await this.ensureToken();
-    return this.request('/fs/wp-cli', { body: { command } });
-  }
-
   // Bug reports
   async getReports(status) {
     await this.ensureToken();
