@@ -134,6 +134,50 @@ export class BugLensClient {
     return this.request('/fs/wp-cli', { body: { command } });
   }
 
+  // v3.2.0 — atomic batch, verify, health, preflight, rescue
+  async batchWrite(files) {
+    await this.ensureToken();
+    return this.request('/fs/batch-write', { body: { files } });
+  }
+
+  async verifyFiles(files) {
+    await this.ensureToken();
+    return this.request('/fs/verify', { body: { files } });
+  }
+
+  async healthCheck() {
+    return this.request('/fs/health', { method: 'GET' });
+  }
+
+  async preflightPaths(paths) {
+    await this.ensureToken();
+    return this.request('/fs/preflight', { body: { paths } });
+  }
+
+  /**
+   * Call rescue.php endpoint directly — bypasses WP REST API.
+   * Use when WP is in fatal-error state and /wp-json/ returns 500.
+   * Requires BUGLENS_RESCUE_URL + BUGLENS_RESCUE_KEY env vars.
+   *
+   * Secret sent in header only (not body) to minimize logging exposure.
+   */
+  async rescueCall(op, params = {}) {
+    const url = process.env.BUGLENS_RESCUE_URL;
+    const key = process.env.BUGLENS_RESCUE_KEY;
+    if (!url || !key) throw new Error('Rescue requires BUGLENS_RESCUE_URL + BUGLENS_RESCUE_KEY env vars.');
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-BugLens-Rescue-Key': key },
+      body: JSON.stringify({ op, ...params }),
+      signal: AbortSignal.timeout(30000),
+    });
+    let data;
+    try { data = await response.json(); }
+    catch { throw new Error(`Rescue: non-JSON response (HTTP ${response.status})`); }
+    if (!response.ok) throw new Error(data.error || `Rescue HTTP ${response.status}`);
+    return data;
+  }
+
   // Bug reports
   async getReports(status) {
     await this.ensureToken();

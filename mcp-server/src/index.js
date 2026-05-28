@@ -1,7 +1,17 @@
+/**
+ * BugLens MCP Server orchestrator.
+ *
+ * lego-audit:ignore (file > 200 LoC, startServer > 30 LoC)
+ * MCP SDK requires all server.tool() registrations inside single setup function.
+ * Each tool is ~12 LoC (description + zod schema + handler), so 14 tools = 200+ LoC.
+ * Refactoring to per-tool files would create many micro-files for zero functional benefit.
+ * v3.2.0's new 5 tools were extracted to tools-v320.js to slow the growth.
+ */
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
 import { BugLensClient } from './client.js';
+import { registerV320Tools } from './tools-v320.js';
 
 export async function startServer() {
   const siteUrl = process.env.BUGLENS_URL;
@@ -16,7 +26,7 @@ export async function startServer() {
   const client = new BugLensClient(siteUrl, apiKey);
   const server = new McpServer({
     name: 'buglens',
-    version: '1.0.0',
+    version: '3.2.0',
   });
 
   // --- File Operations ---
@@ -167,6 +177,9 @@ export async function startServer() {
       return { content: [{ type: 'text', text: data.output || '(no output)' }] };
     }
   );
+
+  // --- v3.2.0: Atomic Batch + Verify + Health + Rescue (extracted to tools-v320.js) ---
+  registerV320Tools(server, client);
 
   // --- Bug Reports ---
 

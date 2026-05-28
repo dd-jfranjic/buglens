@@ -1,6 +1,6 @@
 {
   "name": "buglens-mcp",
-  "version": "1.0.0",
+  "version": "3.2.0",
   "description": "MCP server for BugLens — connect AI coding agents to WordPress sites on shared hosting",
   "keywords": ["mcp", "wordpress", "buglens", "ai", "coding", "remote", "shared-hosting"],
   "license": "GPL-2.0-or-later",
