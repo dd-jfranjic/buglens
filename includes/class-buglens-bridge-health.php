@@ -38,25 +38,35 @@ class BugLens_Bridge_Health {
     }
 
     public static function health( WP_REST_Request $request ): WP_REST_Response {
+        // Tell LiteSpeed Cache (LSCWP) NOT to cache this; without it, LSCWP overrides
+        // Cache-Control with public,max-age=604800 and serves stale data.
+        do_action( 'litespeed_control_set_nocache', 'BugLens health endpoint always-fresh' );
         $start = microtime( true );
+        $payload = self::build_health_payload( $start );
+        $response = new WP_REST_Response( $payload, 200 );
+        $response->header( 'Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0' );
+        $response->header( 'X-LiteSpeed-Cache-Control', 'no-cache' );
+        $response->header( 'Pragma', 'no-cache' );
+        return $response;
+    }
+
+    private static function build_health_payload( float $start ): array {
         global $wp_version, $wpdb;
-        $payload = [
-            'wp_loaded'           => function_exists( 'wp_loaded' ),
-            'wp_version'          => $wp_version ?? 'unknown',
-            'php_version'         => PHP_VERSION,
-            'mysql_version'       => isset( $wpdb ) ? $wpdb->db_version() : 'unknown',
-            'memory_used_mb'      => round( memory_get_usage( true ) / 1024 / 1024, 1 ),
-            'memory_peak_mb'      => round( memory_get_peak_usage( true ) / 1024 / 1024, 1 ),
-            'memory_limit'        => ini_get( 'memory_limit' ),
-            'active_plugins'      => count( (array) get_option( 'active_plugins', [] ) ),
-            'mu_plugins'          => count( wp_get_mu_plugins() ),
-            'last_error_log'      => self::tail_error_log( 5 ),
-            'rescue_status'       => class_exists( 'BugLens_Bridge_Rescue_Security' )
-                                       ? BugLens_Bridge_Rescue_Security::status()
-                                       : null,
-            'request_time_ms'     => round( ( microtime( true ) - $start ) * 1000, 1 ),
+        return [
+            'wp_loaded'       => function_exists( 'wp_loaded' ),
+            'wp_version'      => $wp_version ?? 'unknown',
+            'php_version'     => PHP_VERSION,
+            'mysql_version'   => isset( $wpdb ) ? $wpdb->db_version() : 'unknown',
+            'memory_used_mb'  => round( memory_get_usage( true ) / 1024 / 1024, 1 ),
+            'memory_peak_mb'  => round( memory_get_peak_usage( true ) / 1024 / 1024, 1 ),
+            'memory_limit'    => ini_get( 'memory_limit' ),
+            'active_plugins'  => count( (array) get_option( 'active_plugins', [] ) ),
+            'mu_plugins'      => count( wp_get_mu_plugins() ),
+            'last_error_log'  => self::tail_error_log( 5 ),
+            'rescue_status'   => class_exists( 'BugLens_Bridge_Rescue_Security' )
+                                   ? BugLens_Bridge_Rescue_Security::status() : null,
+            'request_time_ms' => round( ( microtime( true ) - $start ) * 1000, 1 ),
         ];
-        return new WP_REST_Response( $payload, 200 );
     }
 
     public static function preflight( WP_REST_Request $request ): WP_REST_Response {
