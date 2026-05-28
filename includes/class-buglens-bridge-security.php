@@ -296,7 +296,14 @@ class BugLens_Bridge_Security {
 		}
 
 		// Check blocked paths (always enforced, uses fnmatch).
-		$blocked_str = trim( $settings['blocked_paths'] ?? 'wp-config.php,.htaccess,.htpasswd' );
+		// SECURITY HARDENING v3.2.0: ?? only triggers on null, NOT empty string.
+		// wp_parse_args() lets DB-stored '' override the DEFAULTS constant, so empty
+		// blocked_paths setting → empty list → wp-config.php readable (CVE-class).
+		// Defensive fallback: force baseline if empty after trim.
+		$blocked_str = trim( $settings['blocked_paths'] ?? '' );
+		if ( $blocked_str === '' ) {
+			$blocked_str = 'wp-config.php,wp-config-sample.php,.htaccess,.htaccess.bk,.htpasswd';
+		}
 		if ( $blocked_str !== '' ) {
 			$blocked_patterns = array_filter( array_map( 'trim', explode( ',', $blocked_str ) ) );
 			foreach ( $blocked_patterns as $pattern ) {

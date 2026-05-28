@@ -68,3 +68,30 @@ if ( is_dir( $buglens_dir ) ) {
 
     rmdir( $buglens_dir ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir
 }
+
+// Clean up v3.2.0 atomic batch staging dir (transient — safe to delete).
+$buglens_staging = $buglens_upload_dir['basedir'] . '/_buglens-batch-staging';
+if ( is_dir( $buglens_staging ) ) {
+    $buglens_staging_it    = new RecursiveDirectoryIterator( $buglens_staging, RecursiveDirectoryIterator::SKIP_DOTS );
+    $buglens_staging_files = new RecursiveIteratorIterator( $buglens_staging_it, RecursiveIteratorIterator::CHILD_FIRST );
+    foreach ( $buglens_staging_files as $buglens_f ) {
+        if ( $buglens_f->isDir() ) rmdir( $buglens_f->getRealPath() ); // phpcs:ignore
+        else wp_delete_file( $buglens_f->getRealPath() );
+    }
+    rmdir( $buglens_staging ); // phpcs:ignore
+}
+
+/**
+ * v3.2.0 — Rescue artifacts EXPLICITLY PRESERVED on uninstall.
+ *
+ * The following are intentionally NOT deleted:
+ *   - wp-content/buglens-rescue-{slug}.php   (standalone fs endpoint)
+ *   - wp-content/buglens-rescue-state/       (secret hash, lockouts, audit log)
+ *
+ * Reason: If a user installed BugLens specifically for AI agent fs access
+ * (via rescue mode), removing the plugin should not lose that emergency
+ * recovery capability. The user can manually delete these files via cPanel
+ * File Manager or FTP if they want a complete cleanup.
+ *
+ * To fully remove rescue: delete the above paths manually after uninstall.
+ */

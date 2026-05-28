@@ -5,6 +5,43 @@ All notable changes to BugLens will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] — 2026-05-28
+
+### Added — Rescue Mode (resilient AI access when WP crashes)
+- **`rescue-template.php`** — standalone PHP endpoint that works even when WordPress fatal-irates. Installed by plugin activation at `wp-content/buglens-rescue-{random32}.php`. Zero WP dependency — no `wp-load.php`, no DB, no plugin loading. Provides 7 fs ops: `read`, `write`, `delete`, `list`, `info`, `mkdir`, `rename`.
+- **`BugLens_Bridge_Rescue_Security`** class — manages rescue install/uninstall, random URL slug generation (32 hex chars), secret hashing (SHA256), state directory creation with `.htaccess` Deny.
+- **Default DISABLED** — rescue returns HTTP 503 until secret configured via `BugLens_Bridge_Rescue_Security::set_rescue_secret()` (programmatic) or `BUGLENS_RESCUE_KEY` constant in `wp-config.php` (override).
+- **Auto-lockout** — 5 failed auth attempts per minute → 1 hour IP ban (file-based counter, no DB).
+- **Audit log** — JSON Lines format at `wp-content/buglens-rescue-state/audit.jsonl`, falls back to `/tmp/` if uploads/ unavailable.
+- **State directory** auto-created with `.htaccess` (Apache 2.4 + 2.2 syntax) blocking direct web access to secret hash, lockouts, and audit log.
+
+### Added — Atomic Batch + Verify (prevents partial-deploy disasters)
+- **`POST /fs/batch-write`** — all-or-nothing multi-file write. Max 50 files, 10 MB total, 2 MB per file. Pipeline: validate → stage to `wp-content/uploads/_buglens-batch-staging/{nonce}/` → verify sha256 → atomic rename → cleanup. Mid-rename failure returns `partial_commit` with list of already-committed files.
+- **`POST /fs/verify`** — bulk sha256 verification. Body `{files: [{path, sha256?}, ...]}`, returns per-file `{path, exists, size, sha256, matches_expected?}`.
+
+### Added — Diagnostics
+- **`GET /fs/health`** — public (no auth) WP boot status snapshot: `wp_loaded`, `wp_version`, `php_version`, `mysql_version`, memory used/peak/limit, active plugins count, mu_plugins count, last 5 error_log lines, rescue mode status, request time. AI agent can probe "is WP healthy?" before risky operations.
+- **`POST /fs/preflight`** — dry-run path validation. Body `{paths: [{path, mode?}, ...]}`, returns per-path: resolves, parent_exists, parent_writable, blocked, error. Zero filesystem changes. Use before `/fs/batch-write`.
+
+### Added — MCP server v3.2.0
+- 5 new MCP tools: `batch_write`, `verify_files`, `health_check`, `preflight_paths`, `rescue_call`.
+- `rescue_call` uses `BUGLENS_RESCUE_URL` + `BUGLENS_RESCUE_KEY` env vars to bypass WP REST when in fatal state. Secret sent in `X-BugLens-Rescue-Key` header only (not body) to minimize logging exposure.
+- npm package version bumped to `3.2.0`.
+
+### Changed
+- `uninstall.php` — explicitly preserves rescue artifacts (`buglens-rescue-{slug}.php`, `buglens-rescue-state/`) on plugin delete. Reason: user installed rescue specifically for emergency recovery; removing the plugin should not lose that capability. Manual delete via cPanel/FTP if full cleanup desired. Also added cleanup of transient `_buglens-batch-staging/` dir.
+
+### Motivation
+Real incident 2026-05-28: deploy of a custom MU plugin to chapas.hr failed mid-upload (loader file written before module files), causing WP to fatal on every request. BugLens REST API became unavailable because it relies on the same WP boot sequence that was failing. Recovery required manual cPanel File Manager intervention. v3.2.0 ensures AI agents can recover from such situations programmatically via rescue endpoint, and prevents the partial-deploy scenario via atomic batch-write.
+
+### Security
+- All rescue secrets stored as SHA256 hash, not plaintext.
+- Plain secret returned ONCE at generation (show-once UI pattern).
+- Timing-safe `hash_equals()` comparison on every auth check.
+- Path validation via `realpath()` + blocked patterns (glob + regex) — covers rescue state dir at any nesting depth.
+- HTTPS-only enforcement with proxy header support (Cloudflare, LiteSpeed, generic X-Forwarded-Proto).
+- Rescue endpoint URL uses random 32-char slug — even if secret leaked, attacker must guess URL too (2^192 × 2^192 search space).
+
 ## [3.0.1] — 2026-03-22
 
 ### Removed
