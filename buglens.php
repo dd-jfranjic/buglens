@@ -3,7 +3,7 @@
  * Plugin Name: BugLens – Visual Bug Reporter for AI Agents
  * Plugin URI:  https://github.com/dd-jfranjic/buglens
  * Description: Visually select elements, capture screenshots, and create AI-optimized bug reports.
- * Version:     3.1.0
+ * Version:     3.2.0
  * Author:      2klika
  * Author URI:  https://2klika.hr
  * License:     GPL v2 or later
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'BUGLENS_VERSION', '3.1.0' );
+define( 'BUGLENS_VERSION', '3.2.0' );
 define( 'BUGLENS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'BUGLENS_URL', plugin_dir_url( __FILE__ ) );
 define( 'BUGLENS_BASENAME', plugin_basename( __FILE__ ) );
@@ -31,10 +31,19 @@ require_once BUGLENS_DIR . 'includes/class-buglens-admin.php';
 require_once BUGLENS_DIR . 'includes/class-buglens-bridge-security.php';
 require_once BUGLENS_DIR . 'includes/class-buglens-bridge.php';
 
+// v3.2.0 additions — rescue mode + atomic batch + diagnostics.
+require_once BUGLENS_DIR . 'includes/class-buglens-bridge-rescue-security.php';
+require_once BUGLENS_DIR . 'includes/class-buglens-bridge-batch.php';
+require_once BUGLENS_DIR . 'includes/class-buglens-bridge-verify.php';
+require_once BUGLENS_DIR . 'includes/class-buglens-bridge-health.php';
+
 // Initialize.
 add_action( 'init', [ BugLens_CPT::class, 'register' ] );
 add_action( 'rest_api_init', [ BugLens_REST_API::class, 'register' ] );
 add_action( 'rest_api_init', [ BugLens_Bridge::class, 'register' ] );
+add_action( 'rest_api_init', [ BugLens_Bridge_Batch::class, 'register' ] );
+add_action( 'rest_api_init', [ BugLens_Bridge_Verify::class, 'register' ] );
+add_action( 'rest_api_init', [ BugLens_Bridge_Health::class, 'register' ] );
 add_action( 'wp_enqueue_scripts', [ BugLens_Widget::class, 'maybe_enqueue' ] );
 
 // Admin.
@@ -116,6 +125,12 @@ register_activation_hook( __FILE__, function (): void {
             'outerhtml_limit' => 5000,
             'capture_console' => true,
         ] );
+    }
+
+    // v3.2.0 — install rescue endpoint (template → wp-content/buglens-rescue-{slug}.php)
+    // Rescue is OFF by default (returns 503 until secret configured via admin).
+    if ( class_exists( 'BugLens_Bridge_Rescue_Security' ) ) {
+        BugLens_Bridge_Rescue_Security::install_endpoint();
     }
 
     // Flush rewrite rules for CPT.
